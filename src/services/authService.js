@@ -17,10 +17,10 @@ export default class AuthService {
             throw error;
         }
         const hashedPassword = await bcrypt.hash(userData.password, SALT_ROUNDS);
-        const { password, ...newUser } = await db.user.create({
+        const { hashed_password, ...newUser } = await db.user.create({
             data: {
                 email: userData.email,
-                password: hashedPassword,
+                hashed_password: hashedPassword,
                 name: userData.name,
             },
         });
@@ -42,16 +42,16 @@ export default class AuthService {
             error.statusCode = 401;
             throw error;
         }
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(password, user.hashed_password);
         if (!isPasswordValid) {
             const error = new Error('Invalid Credentials');
             error.statusCode = 401;
             throw error;
         }
-        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, {
             expiresIn: '1h',
         });
-        const { password: _, ...userWithoutPassword } = user;
+        const { hashed_password, refresh_token, ...userWithoutPassword } = user;
         return { user: userWithoutPassword, token };
     }
 }
