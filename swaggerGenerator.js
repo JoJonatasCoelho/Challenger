@@ -96,7 +96,47 @@ const document = createDocument({
                 }
             ],
         }
+    },
+      '/datasets/upload': {
+    post: {
+      tags: ['Upload'],
+      summary: 'Upload a file',
+      description: 'Uploads a file (PNG, JPEG, or PDF, up to 5MB)',
+      requestBody: {
+        required: true,
+        content: {
+          'multipart/form-data': {
+            schema: {
+              type: 'object',
+              properties: {
+                file: {
+                  type: 'string',
+                  format: 'binary'
+                }
+              },
+              required: ['file']
+            }
+          }
+        }
+      },
+      responses: {
+        '201': {
+          description: 'File uploaded successfully',
+        },
+        '400': {
+          description: 'Invalid request or file type',
+        },
+        '401': {
+          description: 'Unauthorized',
+        }
+      },
+      security: [
+        {
+          BearerAuth: []
+        }
+      ]
     }
+  },
   },
 });
 
