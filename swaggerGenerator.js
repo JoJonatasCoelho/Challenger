@@ -99,7 +99,7 @@ const document = createDocument({
     },
       '/datasets/upload': {
     post: {
-      tags: ['Upload'],
+      tags: ['Datasets'],
       summary: 'Upload a file',
       description: 'Uploads a file (PNG, JPEG, or PDF, up to 5MB)',
       requestBody: {
@@ -109,12 +109,17 @@ const document = createDocument({
             schema: {
               type: 'object',
               properties: {
+                name: {
+                  type: 'string',
+                  format: 'string',
+                  example: 'dataset_name'
+                },
                 file: {
                   type: 'string',
                   format: 'binary'
-                }
+                },
               },
-              required: ['file']
+              required: ['name', 'file']
             }
           }
         }

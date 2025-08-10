@@ -8,9 +8,31 @@ datasource db {
 }
 
 model User {
-  id              Int     @id @default(autoincrement())
-  email           String  @unique @db.VarChar(255)
-  name            String? @db.VarChar(255)
-  refresh_token   String? @default("") @db.VarChar(255)
-  hashed_password String  @db.VarChar(255)
+  id              Int       @id @default(autoincrement())
+  email           String    @unique @db.VarChar(255)
+  name            String?   @db.VarChar(255)
+  refresh_token   String?   @default("") @db.VarChar(255)
+  hashed_password String    @db.VarChar(255)
+  createdAt       DateTime  @default(now())
+
+  datasets Dataset[]
+}
+
+model Dataset{
+  id              Int       @id @default(autoincrement())
+  name            String
+  userId          Int
+  createdAt       DateTime  @default(now())
+
+  user            User      @relation(fields: [userId], references: [id])
+  records    Record[]
+}
+
+model Record{
+  id              Int       @id @default(autoincrement())
+  datasetId       Int
+  dataJson        Json
+  createdAt       DateTime  @default(now())
+
+  dataset Dataset           @relation(fields: [datasetId], references: [id])
 }
